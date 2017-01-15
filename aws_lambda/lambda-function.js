@@ -1,4 +1,7 @@
-var buildSpeechletResponse, generateResponse;
+var http = require("http"),
+	sBridgeHost = process.env.BRIDGE_HOST,
+	iBridgePort = process.env.BRIDGE_PORT,
+	buildSpeechletResponse, generateResponse, postToBridge;
 
 exports.handler = function(event, context) {
 	try {
@@ -20,12 +23,20 @@ exports.handler = function(event, context) {
 
 			switch (event.request.intent.name) {
 			case "EnterHome":
-				context.succeed(generateResponse(buildSpeechletResponse(
-					"Willkommen daheim", true), {}));
+				postToBridge({
+					sIntent: event.request.intent.name
+				}, function() {
+					context.succeed(generateResponse(buildSpeechletResponse(
+						"Willkommen daheim", true), {}));
+				});
 				break;
 			case "LeaveHome":
-				context.succeed(generateResponse(buildSpeechletResponse(
-					"Bis bald", true), {}));
+				postToBridge({
+					sIntent: event.request.intent.name
+				}, function() {
+					context.succeed(generateResponse(buildSpeechletResponse(
+						"Bis bald", true), {}));
+				});
 				break;
 			default:
 				throw new Error("Invalid intent");
@@ -60,4 +71,22 @@ generateResponse = function(speechletResponse, sessionAttributes) {
 		sessionAttributes: sessionAttributes,
 		response: speechletResponse
 	};
+};
+
+postToBridge = function(oData, callback) {
+	var req, sBody;
+	sBody = JSON.stringify(oData);
+
+	req = http.request({
+		host: sBridgeHost,
+		port: iBridgePort,
+		path: "/alexa",
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Content-Length": Buffer.byteLength(sBody)
+		}
+	}, callback);
+
+	req.end(sBody);
 };

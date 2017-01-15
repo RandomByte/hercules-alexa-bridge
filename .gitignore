@@ -38,3 +38,8 @@ jspm_packages
 
 .DS_Store
 *.sublime-workspace
+
+config.json
+
+!ssl/.keep
+ssl/*

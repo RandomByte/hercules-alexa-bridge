@@ -1,0 +1,4 @@
+{
+    "iHttpPort": 55000,
+    "brokerUrl": "mqtt://test.mosquitto.org"
+}
