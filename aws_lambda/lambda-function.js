@@ -6,36 +6,89 @@ var http = require("http"),
 exports.handler = function(event, context) {
 	try {
 		if (event.session.new) {
-			// New Session
 			console.log("NEW SESSION");
 		}
 
 		switch (event.request.type) {
 		case "LaunchRequest":
-			// Launch Request
 			console.log("LAUNCH REQUEST");
 			context.succeed(generateResponse(buildSpeechletResponse(
-				"Hercules bereit", true), {}));
+				"Hercules bereit", false), {}));
 			break;
 		case "IntentRequest":
-			// Intent Request
 			console.log("INTENT REQUEST: " + event.request.intent.name);
 
 			switch (event.request.intent.name) {
 			case "EnterHome":
 				postToBridge({
 					sIntent: event.request.intent.name
-				}, function() {
-					context.succeed(generateResponse(buildSpeechletResponse(
-						"Willkommen daheim", true), {}));
+				}, function(res) {
+					if (res.statusCode === 200) {
+						context.succeed(generateResponse(buildSpeechletResponse(
+							"Willkommen daheim", true), {}));
+					} else {
+						throw new Error("Unknown backend error");
+					}
 				});
 				break;
 			case "LeaveHome":
 				postToBridge({
 					sIntent: event.request.intent.name
-				}, function() {
-					context.succeed(generateResponse(buildSpeechletResponse(
-						"Bis bald", true), {}));
+				}, function(res) {
+					if (res.statusCode === 200) {
+						context.succeed(generateResponse(buildSpeechletResponse(
+							"Bis bald", true), {}));
+					} else {
+						throw new Error("Unknown backend error");
+					}
+				});
+				break;
+			case "GoToSleep":
+				postToBridge({
+					sIntent: event.request.intent.name
+				}, function(res) {
+					if (res.statusCode === 200) {
+						context.succeed(generateResponse(buildSpeechletResponse(
+							"Gute Nacht", true), {}));
+					} else {
+						throw new Error("Unknown backend error");
+					}
+				});
+				break;
+			case "WakeUp":
+				postToBridge({
+					sIntent: event.request.intent.name
+				}, function(res) {
+					if (res.statusCode === 200) {
+						context.succeed(generateResponse(buildSpeechletResponse(
+							"Guten Morgen", true), {}));
+					} else {
+						throw new Error("Unknown backend error");
+					}
+				});
+				break;
+			case "Enable":
+				postToBridge({
+					sIntent: event.request.intent.name
+				}, function(res) {
+					if (res.statusCode === 200) {
+						context.succeed(generateResponse(buildSpeechletResponse(
+							"Hercules online", true), {}));
+					} else {
+						throw new Error("Unknown backend error");
+					}
+				});
+				break;
+			case "Disable":
+				postToBridge({
+					sIntent: event.request.intent.name
+				}, function(res) {
+					if (res.statusCode === 200) {
+						context.succeed(generateResponse(buildSpeechletResponse(
+							"Hercules offline", true), {}));
+					} else {
+						throw new Error("Unknown backend error");
+					}
 				});
 				break;
 			default:
@@ -43,7 +96,6 @@ exports.handler = function(event, context) {
 			}
 			break;
 		case "SessionEndedRequest":
-			// Session Ended Request
 			console.log("SESSION ENDED REQUEST");
 			break;
 		default:

@@ -1,0 +1,19 @@
+# Template for hercules-alexa-bridge systemd service
+# 1. Place under /etc/systemd/system/hercules-alexa-bridge.service
+# 2. Fill in working dir, user and group
+# 3. Run sudo systemctl enable hercules-alexa-bridge
+# 4. Run sudo systemctl start hercules-alexa-bridge
+# 5. Check the log by running sudo journalctl -f -u hercules-alexa-bridge
+[Service]
+ExecStart=/usr/local/bin/supervisor -q -e json index.js
+WorkingDirectory=<working dir>
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=hercules-alexa-bridge
+User=<user>
+Group=<group>
+
+[Install]
+WantedBy=multi-user.target

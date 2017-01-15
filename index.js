@@ -28,7 +28,9 @@ app.post("/alexa", function(req, res) {
 	case "LeaveHome":
 	case "GoToSleep":
 	case "WakeUp":
-		oMqttClient.publish("Home/State", sIntent, {
+	case "Enable":
+	case "Disable":
+		oMqttClient.publish("Home/StateIntents", sIntent, {
 			qos: 2,
 			retain: true
 		}, function() {
