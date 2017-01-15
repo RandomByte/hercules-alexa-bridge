@@ -1,2 +1,2 @@
 # hercules-alexa-bridge
-Control hercules from a custom amazon alexa skill
+Control hercules from a custom Amazon Alexa skill
